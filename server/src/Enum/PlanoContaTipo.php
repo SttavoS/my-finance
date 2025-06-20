@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Enums;
+namespace App\Enum;
 
-enum PlanoContaTipo
+enum PlanoContaTipo: string
 {
-    case D;
-    case R;
+    case Despesa = 'D';
+    case Receita = 'R';
 }
