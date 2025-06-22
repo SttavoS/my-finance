@@ -12,9 +12,7 @@ class CreatePlanoContaDTO
         #[Assert\Length(min: 5)]
         public string $descricao,
         #[Assert\NotBlank]
-        #[Assert\Length(max: 1)]
-        #[Assert\Choice(callback: [PlanoContaTipo::class, 'value'])]
-        public string $tipo
+        public PlanoContaTipo $tipo
     )
     {
     }

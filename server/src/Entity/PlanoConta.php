@@ -17,7 +17,7 @@ class PlanoConta
     private int $id;
     #[Column(type: Types::STRING, length: 255)]
     public string $descricao;
-    #[Column(type: Types::STRING, length: 1)]
+    #[Column(type: 'plano_conta_tipo_enum', length: 1)]
     public PlanoContaTipo $tipo;
 
     function __construct(string $descricao, PlanoContaTipo $tipo)

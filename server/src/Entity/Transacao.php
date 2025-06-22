@@ -20,7 +20,7 @@ class Transacao
     #[Column(type: Types::STRING, length: 255)]
     public string $historico;
 
-    #[Column(type: Types::STRING,  length: 1)]
+    #[Column(type: 'plano_conta_tipo_enum',  length: 1)]
     public PlanoContaTipo $tipo;
 
     #[Column(type: Types::DECIMAL, precision: 10, scale: 2)]

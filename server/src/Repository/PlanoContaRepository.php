@@ -28,7 +28,7 @@ class PlanoContaRepository extends ServiceEntityRepository
         try {
             $entityManager = $this->getEntityManager();
 
-            $planoConta = new PlanoConta($dto->descricao, PlanoContaTipo::from($dto->tipo));
+            $planoConta = new PlanoConta($dto->descricao, $dto->tipo);
             $entityManager->persist($planoConta);
             $entityManager->flush();
 
