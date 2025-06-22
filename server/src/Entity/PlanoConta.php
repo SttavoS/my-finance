@@ -14,16 +14,20 @@ class PlanoConta
     #[Id]
     #[GeneratedValue]
     #[Column(type: Types::INTEGER)]
-    public int $id;
+    private int $id;
     #[Column(type: Types::STRING, length: 255)]
     public string $descricao;
     #[Column(type: Types::STRING, length: 1)]
     public PlanoContaTipo $tipo;
 
-    function __construct(int $id, string $descricao, PlanoContaTipo $tipo)
+    function __construct(string $descricao, PlanoContaTipo $tipo)
     {
-        $this->id = $id;
         $this->descricao = $descricao;
         $this->tipo = $tipo;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }
