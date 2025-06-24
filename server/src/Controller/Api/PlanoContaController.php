@@ -47,13 +47,16 @@ class PlanoContaController extends AbstractController
         }
     }
 
-    /**
-     * @throws Exception
-     */
     #[Route('/api/planos-conta/{id}', name: 'get-planos-conta', methods: ['GET'])]
-    public function getPlanoConta($id)
+    public function getPlanoConta(int $id): Response
     {
-        throw new Exception('Method Not Implemented');
+        $planoConta = $this->planoContaRepo->find($id);
+
+        if (!$planoConta) {
+            return new JsonResponse("Plano de Conta não encontrado", Response::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse($planoConta, Response::HTTP_OK);
     }
 
     /**
