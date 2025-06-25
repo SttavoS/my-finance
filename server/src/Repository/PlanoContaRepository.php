@@ -4,12 +4,19 @@ namespace App\Repository;
 
 use App\DTO\CreatePlanoContaDTO;
 use App\Entity\PlanoConta;
-use App\Enum\PlanoContaTipo;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @extends ServiceEntityRepository<PlanoConta>
+ *
+ * @method PlanoConta|null find($id, $lockMode = null, $lockVersion = null)
+ * @method PlanoConta|null findOneBy(array $criteria, array $orderBy = null)
+ * @method PlanoConta[]    findAll()
+ * @method PlanoConta[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class PlanoContaRepository extends ServiceEntityRepository
 {
     function __construct(

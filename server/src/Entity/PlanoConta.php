@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use App\Enum\PlanoContaTipo;
 use App\Repository\PlanoContaRepository;
-use Doctrine\ORM\Mapping\{Column, Entity, GeneratedValue, Id, Table};
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\{Column, Entity, GeneratedValue, Id, Table};
 
 #[Entity(repositoryClass: PlanoContaRepository::class)]
 #[Table(name: 'planos_conta')]
