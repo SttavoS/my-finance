@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\DTO\CreatePlanoContaDTO;
+use App\DTO\PlanoContaResponseDTO;
 use App\Repository\PlanoContaRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +28,12 @@ class PlanoContaController extends AbstractController
     {
         $planosConta = $this->planoContaRepo->findAll();
 
-        return new JsonResponse($planosConta, Response::HTTP_OK);
+        $mappedResponse = array_map(
+            fn($planoConta) => new PlanoContaResponseDTO($planoConta->getId(), $planoConta->descricao, $planoConta->tipo),
+            $planosConta
+        );
+
+        return new JsonResponse($mappedResponse, Response::HTTP_OK);
     }
 
     #[Route('/api/planos-conta', name: 'create-planos-conta', methods: ['POST'])]
@@ -56,7 +62,11 @@ class PlanoContaController extends AbstractController
             return new JsonResponse("Plano de Conta não encontrado", Response::HTTP_NOT_FOUND);
         }
 
-        return new JsonResponse($planoConta, Response::HTTP_OK);
+        return new JsonResponse(new PlanoContaResponseDTO(
+            $planoConta->getId(),
+            $planoConta->descricao,
+            $planoConta->tipo
+        ), Response::HTTP_OK);
     }
 
     /**
