@@ -14,7 +14,7 @@ class PlanoConta
     #[Id]
     #[GeneratedValue]
     #[Column(type: Types::INTEGER)]
-    private int $id;
+    public int $id;
     #[Column(type: Types::STRING, length: 255)]
     public string $descricao;
     #[Column(type: 'plano_conta_tipo_enum', length: 1)]
@@ -24,10 +24,5 @@ class PlanoConta
     {
         $this->descricao = $descricao;
         $this->tipo = $tipo;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
     }
 }
