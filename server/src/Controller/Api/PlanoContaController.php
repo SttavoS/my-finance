@@ -60,20 +60,53 @@ class PlanoContaController extends AbstractController
     }
 
     /**
-     * @throws Exception
+     * @param int $id
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @return JsonResponse
      */
     #[Route('/api/planos-conta/{id}', name: 'update-planos-conta', methods: ['PUT'])]
-    public function updatePlanoConta($id)
+    public function updatePlanoConta(int $id, Request $request, SerializerInterface $serializer): JsonResponse
     {
-        throw new Exception('Method Not Implemented');
+        try {
+            $planoConta = $this->planoContaRepo->find($id);
+
+            if (!$planoConta) {
+                return new JsonResponse('Plano de Conta não encontrado', Response::HTTP_NOT_FOUND);
+            }
+
+            $dto = $serializer->deserialize($request->getContent(), CreatePlanoContaDTO::class, 'json');
+            $novoPlanoConta = $this->planoContaRepo->update($planoConta, $dto);
+
+            return new JsonResponse($novoPlanoConta, Response::HTTP_OK);
+        } catch (UnexpectedValueException $ex) {
+            return new JsonResponse($ex->getMessage(), Response::HTTP_BAD_REQUEST);
+        } catch (ExceptionInterface $ex) {
+            return new JsonResponse($ex->getMessage(), Response::HTTP_BAD_REQUEST);
+        } catch (Exception $ex) {
+            return new JsonResponse($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
-     * @throws Exception
+     * @param int $id
+     * @return JsonResponse
      */
     #[Route('/api/planos-conta/{id}', name: 'delete-planos-conta', methods: ['DELETE'])]
-    public function deletePlanoConta($id)
+    public function deletePlanoConta(int $id): JsonResponse
     {
-        throw new Exception('Method Not Implemented');
+        try {
+            $planoConta = $this->planoContaRepo->find($id);
+
+            if (!$planoConta) {
+                return new JsonResponse('Plano de Conta não encontrado', Response::HTTP_NOT_FOUND);
+            }
+
+            $this->planoContaRepo->delete($planoConta);
+
+            return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        } catch (Exception $ex) {
+            return new JsonResponse($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
