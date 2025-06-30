@@ -64,7 +64,7 @@ O projeto segue uma arquitetura moderna de aplicação web dividida em duas cama
     composer install
     ```
 
-4. **Instale as dependências do Backend**
+4. **Instale as dependências do Frontend**
 
     ```bash
     cd web
