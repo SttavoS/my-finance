@@ -1,10 +1,9 @@
-import type { PlanoConta } from '@/types/PlanoConta.ts';
+import type { PlanoConta } from '@/types/PlanoConta';
 
-export type Transacao = {
+export interface Transacao {
   id: number;
   planoConta: PlanoConta;
   historico: string;
   valor: number;
-  tipo: string;
   data: string;
-};
+}
