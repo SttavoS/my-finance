@@ -34,6 +34,32 @@ class TransacaoRepository extends ServiceEntityRepository
         parent::__construct($registry, Transacao::class);
     }
 
+    public function getAllWithPlanoConta()
+    {
+        $query = $this
+            ->createQueryBuilder('t')
+            ->leftJoin('t.planoConta', 'pc')
+            ->addSelect('pc')
+            ->getQuery();
+        $this->logger->info($query->getSQL());
+
+        return $query->execute();
+    }
+
+    public function findOneWithPlanoConta(int $id)
+    {
+        $query = $this
+            ->createQueryBuilder('t')
+            ->leftJoin('t.planoConta', 'pc')
+            ->addSelect('pc')
+            ->where('t.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery();
+        $this->logger->info($query->getSQL());
+
+        return $query->getOneOrNullResult();
+    }
+
     /**
      * @param CreateTransacaoDTO $dto
      * @return Transacao
