@@ -136,6 +136,11 @@ onMounted(() => fetchTransacoes());
           {{ new Date(data.data.date).toLocaleDateString('pt-BR') }}
         </template>
       </Column>
+      <Column field="planoConta.tipo" header="Tipo">
+        <template #body="{ data }">
+          {{ data.tipo === 'D' ? 'Despesa' : 'Receita' }}
+        </template>
+      </Column>
       <Column field="planoConta.descricao" header="Plano de Conta"></Column>
       <Column header="Ações">
         <template #body="{ data }">
