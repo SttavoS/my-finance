@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\DTO\CreateTransacaoDTO;
 use App\Entity\Transacao;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -80,18 +79,12 @@ class TransacaoRepository extends ServiceEntityRepository
 
     /**
      * @param Transacao $transacao
-     * @param CreateTransacaoDTO $dto
      * @return Transacao
      * @throws Exception
      */
-    public function update(Transacao $transacao, CreateTransacaoDTO $dto): Transacao
+    public function update(Transacao $transacao): Transacao
     {
         try {
-            $transacao->historico = $dto->historico;
-            $transacao->tipo = $dto->tipo;
-            $transacao->valor = $dto->valor;
-            $transacao->data = $dto->data;
-
             $this->entityManager->persist($transacao);
             $this->entityManager->flush();
 

@@ -33,7 +33,7 @@ watch(
     if (newValue) {
       historico.value = newValue.historico;
       valor.value = newValue.valor;
-      data.value = new Date(newValue.data);
+      data.value = new Date(newValue.data.date);
       planoContaId.value = newValue.planoConta.id;
     }
   },
@@ -85,7 +85,7 @@ onMounted(fetchPlanosConta);
       </div>
       <div class="form-group">
         <label for="data">Data</label>
-        <DatePicker id="data" v-model="data.date" dateFormat="dd/mm/yy" />
+        <DatePicker id="data" v-model="data" dateFormat="dd/mm/yy" />
       </div>
       <div class="form-group">
         <label for="plano-conta">Plano de Conta</label>

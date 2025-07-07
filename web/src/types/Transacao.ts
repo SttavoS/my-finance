@@ -5,5 +5,5 @@ export interface Transacao {
   planoConta: PlanoConta;
   historico: string;
   valor: number;
-  data: string;
+  data: object;
 }

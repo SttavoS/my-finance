@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\DTO\CreateTransacaoDTO;
+use App\DTO\UpdateTransacaoDTO;
+use App\Exception\ApplicationException;
 use App\Repository\TransacaoRepository;
 use App\Service\Transacao\CreateNewTransacaoService;
+use App\Service\Transacao\UpdateTransacaoService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +26,8 @@ class TransacaoController extends AbstractController
     function __construct(
         private readonly TransacaoRepository $transacaoRepo,
         private readonly LoggerInterface $logger,
-        private readonly CreateNewTransacaoService $createNewTransacaoService
+        private readonly CreateNewTransacaoService $createNewTransacaoService,
+        private readonly UpdateTransacaoService $updateTransacaoService
     )
     {
     }
@@ -91,16 +95,12 @@ class TransacaoController extends AbstractController
     public function update(int $id, Request $request, SerializerInterface $serializer): JsonResponse
     {
         try {
-            $transacaoExistente = $this->transacaoRepo->find($id);
-
-            if (!$transacaoExistente) {
-                return new JsonResponse('Transação não encontrada', Response::HTTP_NOT_FOUND);
-            }
-
-            $dto = $serializer->deserialize($request->getContent(), CreateTransacaoDTO::class, 'json');
-            $transacao = $this->transacaoRepo->update($transacaoExistente, $dto);
+            $dto = $serializer->deserialize($request->getContent(), UpdateTransacaoDTO::class, 'json');
+            $transacao = $this->updateTransacaoService->execute($id, $dto);
 
             return new JsonResponse($transacao, Response::HTTP_OK);
+        } catch (ApplicationException $ex) {
+            return new JsonResponse($ex->getMessage(), $ex->getCode());
         } catch (UnexpectedValueException|ExceptionInterface $ex) {
             return new JsonResponse($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         } catch (Exception $ex) {
