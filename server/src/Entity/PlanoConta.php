@@ -23,15 +23,18 @@ class PlanoConta
     public PlanoContaTipo $tipo;
 
     #[OneToMany(targetEntity: Transacao::class, mappedBy: 'planoConta')]
-    private Collection $transacoes {
-        get => $this->transacoes;
-    }
+    private Collection $transacoes;
 
     function __construct(string $descricao, PlanoContaTipo $tipo)
     {
         $this->descricao = $descricao;
         $this->tipo = $tipo;
         $this->transacoes = new ArrayCollection();
+    }
+
+    public function getTransacoes()
+    {
+        return $this->transacoes;
     }
 
     public function addTransacao(Transacao $transacao): void
