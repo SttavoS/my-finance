@@ -61,18 +61,17 @@ class TransacaoRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param CreateTransacaoDTO $dto
+     * @param Transacao $transacao
      * @return Transacao
      * @throws Exception
      */
-    public function add(CreateTransacaoDTO $dto): Transacao
+    public function add(Transacao $transacao): Transacao
     {
         try {
-            $planoConta = new Transacao($dto->historico, $dto->tipo, $dto->valor, $dto->data);
-            $this->entityManager->persist($planoConta);
+            $this->entityManager->persist($transacao);
             $this->entityManager->flush();
 
-            return $planoConta;
+            return $transacao;
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
             throw $e;

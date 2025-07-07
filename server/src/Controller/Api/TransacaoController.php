@@ -6,7 +6,9 @@ namespace App\Controller\Api;
 
 use App\DTO\CreateTransacaoDTO;
 use App\Repository\TransacaoRepository;
+use App\Service\Transacao\CreateNewTransacaoService;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,32 +20,45 @@ use UnexpectedValueException;
 
 class TransacaoController extends AbstractController
 {
-    function __construct(private readonly TransacaoRepository $transacaoRepo)
+    function __construct(
+        private readonly TransacaoRepository $transacaoRepo,
+        private readonly LoggerInterface $logger,
+        private readonly CreateNewTransacaoService $createNewTransacaoService
+    )
     {
     }
 
     #[Route('/api/transacoes', methods: ['GET'])]
     public function index(): Response
     {
-        $transacoes = $this->transacaoRepo->findAll();
+        try {
+            $transacoes = $this->transacaoRepo->getAllWithPlanoConta();
 
-        if (empty($transacoes)) {
-            return new JsonResponse($transacoes, Response::HTTP_NO_CONTENT);
+            if (empty($transacoes)) {
+                return new JsonResponse($transacoes, Response::HTTP_NO_CONTENT);
+            }
+
+            return new JsonResponse($transacoes, Response::HTTP_OK);
+        } catch (Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            return new JsonResponse($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return new JsonResponse($transacoes, Response::HTTP_OK);
     }
 
     #[Route('/api/transacoes/{id}', methods: ['GET'])]
     public function show(int $id): Response
     {
-        $transacao = $this->transacaoRepo->find($id);
+        try {
+            $transacao = $this->transacaoRepo->findOneWithPlanoConta($id);
 
-        if (!$transacao) {
-            return new JsonResponse("Transação não encontrada", Response::HTTP_NOT_FOUND);
+            if (!$transacao) {
+                return new JsonResponse("Transação não encontrada", Response::HTTP_NOT_FOUND);
+            }
+
+            return new JsonResponse($transacao, Response::HTTP_OK);
+        } catch (Exception $ex) {
+            return new JsonResponse($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return new JsonResponse($transacao, Response::HTTP_OK);
     }
 
     /**
@@ -51,14 +66,14 @@ class TransacaoController extends AbstractController
      * @param SerializerInterface $serializer
      * @return JsonResponse
      */
-    #[Route('/transacoes', methods: ['POST'])]
+    #[Route('/api/transacoes', methods: ['POST'])]
     public function store(Request $request, SerializerInterface $serializer): JsonResponse
     {
         try {
             $dto = $serializer->deserialize($request->getContent(), CreateTransacaoDTO::class, 'json');
-            $planoConta = $this->transacaoRepo->add($dto);
+            $newTransacao = $this->createNewTransacaoService->execute($dto);
 
-            return new JsonResponse($planoConta, Response::HTTP_CREATED);
+            return new JsonResponse($newTransacao, Response::HTTP_CREATED);
         } catch (UnexpectedValueException|ExceptionInterface $ex) {
             return new JsonResponse($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         } catch (Exception $ex) {
