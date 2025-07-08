@@ -21,9 +21,9 @@ use Psr\Log\LoggerInterface;
 class PlanoContaRepository extends ServiceEntityRepository
 {
     function __construct(
-        ManagerRegistry $registry,
+        ManagerRegistry                         $registry,
         private readonly EntityManagerInterface $entityManager,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface        $logger
     )
     {
         parent::__construct($registry, PlanoConta::class);
@@ -79,6 +79,37 @@ class PlanoContaRepository extends ServiceEntityRepository
         try {
             $this->entityManager->remove($planoConta);
             $this->entityManager->flush();
+        } catch (Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            throw $ex;
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getPlanosDeContaWithTransacoes(?string $dataInicio, ?string $dataFim): array
+    {
+        try {
+            $query = $this
+                ->createQueryBuilder('pc')
+                ->select('pc.id', 'pc.descricao', 'pc.tipo', 'SUM(t.valor) AS total')
+                ->leftJoin('pc.transacoes', 't')
+                ->groupBy('pc.id', 'pc.descricao', 'pc.tipo')
+                ->orderBy('total', 'DESC');
+
+            if ($dataInicio) {
+                $query->andWhere('t.data >= :dataInicio')
+                    ->setParameter('dataInicio', $dataInicio);
+            }
+
+            if ($dataFim) {
+                $query->andWhere('t.data <= :dataFim')
+                    ->setParameter('dataFim', $dataFim);
+            }
+
+            $this->logger->info($query->getQuery()->getSQL());
+            return $query->getQuery()->getResult();
         } catch (Exception $ex) {
             $this->logger->error($ex->getMessage());
             throw $ex;
