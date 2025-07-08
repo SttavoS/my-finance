@@ -38,6 +38,7 @@ O projeto segue uma arquitetura moderna de aplicação web dividida em duas cama
 ### Pré-requisitos
 - PHP 8.4
 - Composer
+- Symfony CLI
 - Node.js (versão LTS recomendada)
 - npm
 - Docker e Docker Compose
@@ -87,7 +88,7 @@ O projeto segue uma arquitetura moderna de aplicação web dividida em duas cama
  
     Para o Backend:
     ```bash
-    php bin/console server:start
+    symfony server:start
     ``` 
     
     Para o Frontend:
