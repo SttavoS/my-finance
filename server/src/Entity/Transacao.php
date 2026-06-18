@@ -29,7 +29,7 @@ class Transacao
     #[Column(type: Types::DATE_MUTABLE)]
     public DateTime $data;
 
-    function __construct(string $historico, PlanoConta $planoConta, float $valor, DateTime $data)
+    public function __construct(string $historico, PlanoConta $planoConta, float $valor, DateTime $data)
     {
         $this->historico = $historico;
         $this->planoConta = $planoConta;
